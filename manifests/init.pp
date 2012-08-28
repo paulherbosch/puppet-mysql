@@ -10,5 +10,5 @@
 #
 # Sample Usage:
 #
-class mysql ($data_dir=undef) {
+class mysql () {
 }

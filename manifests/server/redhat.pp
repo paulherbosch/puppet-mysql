@@ -1,11 +1,26 @@
 class mysql::server::redhat {
   include mysql::params
 
+  case $mysql::params::real_instance_type {
+    small: { include mysql::config::performance::small }
+    medium: { include mysql::config::performance::medium }
+    large: { include mysql::config::performance::large }
+    default: { fail('Unknown instance type') }
+  }
+
   package { 'mysql-server':
     ensure => installed,
   }
 
-  file { $mysql::params::data_dir :
+  service { $mysql::params::myservice:
+    ensure      => running,
+    enable      => true,
+    hasrestart  => true,
+    hasstatus   => true,
+    require     => Package['mysql-server'],
+  }
+
+  file { $mysql::params::real_data_dir :
     ensure  => directory,
     owner   => 'mysql',
     group   => 'mysql',

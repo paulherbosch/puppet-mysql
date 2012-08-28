@@ -5,12 +5,23 @@ class mysql::params {
     default                 => '/etc/mysql/my.cnf',
   }
 
+  $myservice = $::operatingsystem ? {
+    /RedHat|Fedora|CentOS/  => 'mysqld',
+    default                 => 'mysql',
+  }
+
   $mycnfctx = "/files${mycnf}"
 
-  if ! $mysql::data_dir {
+  if ! $mysql::server::data_dir {
     $real_data_dir = '/var/lib/mysql'
   } else {
-    $real_data_dir = $mysql::data_dir
+    $real_data_dir = $mysql::server::data_dir
+  }
+
+  if ! $mysql::server::instance_type {
+    $real_instance_type = 'medium'
+  } else {
+    $real_data_dir = $mysql::server::instance_type
   }
 
   #$data_dir = $mysql_data_dir ? {

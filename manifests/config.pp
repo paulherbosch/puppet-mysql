@@ -50,7 +50,7 @@ end %>')
     default: { err ( "unknown ensure value ${ensure}" ) }
 }
 
-augeas { "my.cnf/${section}/${name}":
+augeas { "${mysql::params::mycnfctx}/${section}/${name}":
   context => "${mysql::params::mycnfctx}/target[.='${section}']",
   changes => [
     "set ${mysql::params::mycnfctx}/target[.='${section}'] ${section}",
@@ -59,6 +59,6 @@ augeas { "my.cnf/${section}/${name}":
   ],
   require => [ File[ $mysql::params::mycnf ],
   File[ $mysql::params::data_dir ] ],
-  notify => Service['mysql'],
+  notify => Service[ $mysql::params::myservice ],
   }
 }
