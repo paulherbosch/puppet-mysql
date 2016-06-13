@@ -27,11 +27,11 @@ class mysql::server::redhat {
   }
 
   service { $mysql::params::myservice:
-    ensure      => running,
-    enable      => true,
-    hasrestart  => true,
-    hasstatus   => true,
-    require     => [ Package[$mysql_server_dependencies], File["/etc/init.d/${mysql::params::myservice}"] ],
+    ensure     => running,
+    enable     => true,
+    hasrestart => true,
+    hasstatus  => true,
+    require    => [ Package[$mysql_server_dependencies], File["/etc/init.d/${mysql::params::myservice}"] ],
   }
 
   file { $mysql::params::real_data_dir :
@@ -42,11 +42,11 @@ class mysql::server::redhat {
   }
 
   file { '/etc/my.cnf':
-    ensure  => present,
-    path    => $mysql::params::mycnf,
-    owner   => root,
-    group   => root,
-    mode    => '0644',
+    ensure => present,
+    path   => $mysql::params::mycnf,
+    owner  => root,
+    group  => root,
+    mode   => '0644',
   }
 
   file { "/etc/init.d/${mysql::params::myservice}":
@@ -55,6 +55,15 @@ class mysql::server::redhat {
     group   => root,
     mode    => '0755',
     content => template("${module_name}/mysqld.erb"),
+    require => Package[$mysql_server_dependencies],
+  }
+
+  file { '/etc/sysconfig/mysqld':
+    ensure  => present,
+    owner   => root,
+    group   => root,
+    mode    => '0644',
+    content => template("${module_name}/mysqld.sysconfig.erb"),
     require => Package[$mysql_server_dependencies],
   }
 
